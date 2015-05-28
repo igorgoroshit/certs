@@ -1,0 +1,11 @@
+{
+    "name": "igorgoroshit/certs",
+    "description": "OpenSSL Certificate Generation LIB",
+    "authors": [
+        {
+            "name": "Igor Goroshit",
+            "email": "igor@webt.co.il"
+        }
+    ],
+    "require": {}
+}
