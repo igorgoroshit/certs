@@ -4,7 +4,7 @@ use Illuminate\Support\ServiceProvider;
 use Igorgoroshit\Certs\SSLCert;
 use Igorgoroshit\Certs\Commands;
 
-class L4pdfServiceProvider extends ServiceProvider {
+class L4CertsServiceProvider extends ServiceProvider {
 
 	protected $defer = false;
 
