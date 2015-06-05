@@ -2,8 +2,8 @@
 
 return [
 
-		"storagePath" 							=> app_path().DIRECTORY_SEPARATOR.'CAStorage',
-		"model"											=> "Certificate",
+		"table"											=> "cartificates",
+		"serialKey"									=> "id",
 
 		"subject" => [
 			"countryName"            	=> "IL",              		// 2-digit country code
@@ -15,15 +15,11 @@ return [
 			"emailAddress"           	=> "igor@webt.co.il"			// Email address for certificate
 		], 
 
-		"certSettings" => [
-			"password" 								=> '',                		// Password for private key sign
-			"validity" 								=> 365,                 	// Cert validity time
-		],
+		"password" 								=> '',                		// Password for private key sign
+		"validity" 								=> 365,                 	// Cert validity time
 
-		"keySettings" => [
-			"algorithm" 							=> "sha512",             	// Cert Digest Algorythm
-			"bits" 										=> 2048,                 	// Private Key Size
-			"type" 										=> OPENSSL_KEYTYPE_RSA,  	// Private Key Tipe
-		]
+		"algo" 										=> "sha512",             	// Cert Digest Algorythm
+		"bits" 										=> 2048,                 	// Private Key Size
+		"type" 										=> OPENSSL_KEYTYPE_RSA,  	// Private Key Tipe
 
 ];

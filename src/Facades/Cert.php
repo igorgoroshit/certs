@@ -2,11 +2,11 @@
 
 use Illuminate\Support\Facades\Facade;
 
-class Cert extends Facade {
+class Certificate extends Facade {
 
 	  protected static function getFacadeAccessor()
     {
-        return 'l4cert';
+        return 'l4certificate';
     }
 
 }

@@ -3,6 +3,8 @@
 use Illuminate\Support\ServiceProvider;
 use Igorgoroshit\Certs\SSLCert;
 use Igorgoroshit\Certs\Commands;
+use Igorgoroshit\Certs\Storage\StorageDB;
+use Config;
 
 class L4CertsServiceProvider extends ServiceProvider {
 
@@ -17,12 +19,21 @@ class L4CertsServiceProvider extends ServiceProvider {
 	{
 		$this->app->bind('l4cert', function()
 		{
-			$certs = new SSLCert($this->app['config']['certs::storagePath']);
 
-			//print_r($certs);die();
+			$storage = new StorageDB(
+				Config::get('certs::serialKey'),
+				Config::get('certs::table')
+			);
+
+			$certs = new SSLCert($storage);
+
+			$certs->setAlgo(Config::get('certs::algo'));
+			$certs->setBits(Config::get('certs::bits'));
+			$certs->setType(Config::get('certs::type'));
 
 			return $certs;
 		});
+
 
 		$this->app['certs.generateCA'] = $this->app->share(function($app)
 		{

@@ -12,7 +12,15 @@ class AddCertificatesTable extends Migration {
 	 */
 	public function up()
 	{
-		//
+		Schema::create('organizations', function($table)
+		{
+			$table->increments('id');
+			$table->binary('public');
+			$table->binary('private');
+			$table->binary('certificate');
+			$table->dateTime
+
+		});
 	}
 
 	/**

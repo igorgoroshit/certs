@@ -1,12 +1,92 @@
 <?php namespace Igorgoroshit\Certs;
 
+use Igorgoroshit\Certs\Interfaces\StorageInterface;
+use Igorgoroshit\Certs\Interfaces\CertificateInterface;
+use Igorgoroshit\Certs\Certificate;
 use Exception;
 
 class SSLCert{
 
-	public function __construct(){
-	//	$this->storagePath = $path;
-	//	$this->load_ca();
+	protected $storage;
+	protected $algo;
+	protected $bits;
+	protected $type;
+	protected $root;
+	protected $validity = 365;
+	protected $password = '';
+
+	public function __construct(StorageInterface $storage)
+	{
+		$this->storage = $storage;
+	}
+
+	public function setAlgo($algo)
+	{
+		$this->algo = $algo;
+	}
+
+	public function setBits($bits)
+	{
+		$this->bits = (int)$bits;
+	}
+
+	public function setType($type)
+	{
+		$this->type = $type;
+	}
+
+	public function setValidity($validity)
+	{
+		$this->validity = (int)$validity;
+	}
+
+	public function setPassword($password)
+	{
+		$this->password = $password;
+	}
+
+	public function find($serial)
+	{
+		$data = $this->store->find($serial);
+	}
+
+	public function create($data)
+	{
+
+		//create private/public key pair
+		$key = openssl_pkey_new([
+			'digest_alg' 				=> $this->algo,
+			'private_key_bits' 	=> $this->bits,
+			'private_key_type' 	=> $this->type
+		]);
+
+		//export private key
+		$priKeyOut = NULL;
+		openssl_pkey_export($key, $priKeyOut);
+
+		//create and export new csr
+		$csr = openssl_csr_new($data, $priKey);
+		$csrOut = NULL;
+		openssl_csr_export($csr, $csrOut);
+
+
+		$cert = new Certificate();
+		$cert->setPrivateKey($priKeyOut);
+		$cert->setCsr($csrOut);
+	}
+
+	public function sign(CertificateInterface $cert)
+	{
+		$csr 			= $cert->getCsr();
+
+		$signed = openssl_csr_sign(
+			$csr,
+			$this->root->getCertificate(),
+			$this->root->getPrivateKey(),
+			$this->validity
+		);
+
+		$cert->setCertificate = $this->export($csr);
 	}
 
 	/*
@@ -83,20 +163,20 @@ class SSLCert{
 		return openssl_csr_new($csr, $privateKey);
 	}
 
-	public function sign($csr, $certSettings, $privateKey, $cacert = NULL){
+	// public function sign($csr, $certSettings, $privateKey, $cacert = NULL){
 
-		$output = NULL;
-		if($cacert !== NULL){
-			openssl_x509_export($cacert, $output);
-		}
+	// 	$output = NULL;
+	// 	if($cacert !== NULL){
+	// 		openssl_x509_export($cacert, $output);
+	// 	}
 				
-		return openssl_csr_sign(
-			$csr,
-			$output,
-			$privateKey,
-			$certSettings['validity']
-		);
-	}
+	// 	return openssl_csr_sign(
+	// 		$csr,
+	// 		$output,
+	// 		$privateKey,
+	// 		$certSettings['validity']
+	// 	);
+	// }
 
 
 	public function validate($cert, $key, $password = "")

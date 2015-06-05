@@ -14,8 +14,15 @@ class CertsGenerateCA extends Command {
 
     public function fire()
     {
+
+      //$cert = Certificate::find('rootca');
+
     	$cert = App::make('l4cert');
       $options = Config::get('certs::subject');
+      
+      $new = $cert->create($options);
+      print_r($new); die();
+
       $data = [];
     	if(!$cert->ca_exists())
     	{
