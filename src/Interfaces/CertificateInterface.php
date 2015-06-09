@@ -4,10 +4,11 @@
 interface CertificateInterface {
 
 	//setters
+	
 	public function setPrivateKey($key);
 	public function setCsr($csr);
+	public function setNew($val);
 	public function setCertificate($cert);
-	public function setValidity($days);
 	public function setPassword($password = '');
 	public function setSerial($serial);
 
@@ -17,7 +18,7 @@ interface CertificateInterface {
 	public function getPublicKey();
 	public function getCsr();
 	public function getCertificate();
-	public function getValidity();
+	public function getValidUntilDate();
 	public function getPassword();
 	public function getSerial();
 	public function isNew();

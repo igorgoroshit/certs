@@ -14,61 +14,35 @@ class CertsGenerateCA extends Command {
 
     public function fire()
     {
-
-      //$cert = Certificate::find('rootca');
-
     	$cert = App::make('l4cert');
       $options = Config::get('certs::subject');
-      
-      $new = $cert->create($options);
-      print_r($new); die();
+    
+      if($cert->hasRoot())
+      {
+        $this->info('Root Certificate Existes!');
+        exit(0);
+      }
 
+      $this->info('Root Certificate Generation Proccess:');
+      $this->info('Press ENTER to preserve current value');
       $data = [];
-    	if(!$cert->ca_exists())
-    	{
+      foreach($options as $key => $value)
+      {
+        $newvalue = $this->ask("Please enter $key [".$value."]:");
+        if(empty($newvalue))
+        {
+          $data[$key] = $options[$key];
+        }else{
+          $data[$key] = $newvalue;
+        }
+      }
 
-        //putenv('RANDFILE=~/.rand');
-            $this->info('CA Cert Generation:');
+      $root = $cert->create($data, false);
+      $cert->save($root, Config::get('certs::rootSerial'));
+      $cert->setRoot($root);
+      $cert->sign($root, 1825);
 
-            foreach ($options as $key => $value) {
-              $newvalue = $this->ask("Enter $key"." [$value]:");
-
-              if(!empty($newvalue))
-              {
-                $data[$key] = $newvalue;
-              }else{
-                $data[$key] = $value;
-              }
-
-            }
-
-            $keySettings  = Config::get('certs::keySettings');
-            $certSettings = Config::get('certs::certSettings');
-           
-            list($caPKey, $caCSR, $caroot) = $cert->genRootCa($data, $keySettings, $certSettings);
-            print_r($cert->export($caroot));
-
-            $this->info('CA Cert Generation:');
-
-            foreach ($options as $key => $value) {
-              $newvalue = $this->ask("Enter $key"." [$value]:");
-
-              if(!empty($newvalue))
-              {
-                $data[$key] = $newvalue;
-              }else{
-                $data[$key] = $value;
-              }
-
-            }
-
-            $keySettings  = Config::get('certs::keySettings');
-            $certSettings = Config::get('certs::certSettings');
-
-            $certificate = $cert->certificate($data, $keySettings, $certSettings, $caPKey, $caroot);
-            print_r($cert->export($certificate));
-    	}else{
-    		print "CA Cert exists!\n";
-    	}
+      if($root->getValidUntilDate())
+        $this->info('Root certificate generated successfully');
     }
 }

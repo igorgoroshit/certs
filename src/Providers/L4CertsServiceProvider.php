@@ -31,6 +31,14 @@ class L4CertsServiceProvider extends ServiceProvider {
 			$certs->setBits(Config::get('certs::bits'));
 			$certs->setType(Config::get('certs::type'));
 
+			$root = $certs->find(Config::get('certs::rootSerial'));
+
+			//set root certificate if exists
+			if($root)
+			{
+				$certs->setRoot($root);
+			}
+
 			return $certs;
 		});
 

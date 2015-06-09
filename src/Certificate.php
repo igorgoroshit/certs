@@ -3,24 +3,25 @@
 use Igorgoroshit\Certs\Interfaces\CertificateInterface;
 use Exception;
 
-class Cetificate implements CertificateInterface {
+class Certificate implements CertificateInterface {
 
-	protected $priKey 			= NULL;
-	protected $pubKey 			= NULL;
-	protected $csr					= NULL;
-	protected $certificate 	= NULL;
-	protected $data 				= NULL;
-	protected $serial 			= NULL;
-	protected $new					= true;
+	protected $priKey 					= NULL;
+	protected $pubKey 					= NULL;
+	protected $csr							= NULL;
+	protected $certificate 			= NULL;
+	protected $data 						= NULL;
+	protected $serial 					= NULL;
+	protected $new							= true;
+	protected $validUntilDate   = NULL;
 
 	protected $keys					= [
-			"countryName" => true,
-			"stateOrProvinceName" => true,
-			"localityName" => true,
-			"organizationName" => true,
-			"organizationalUnitName" => true,
-			"commonName" => true,
-			"emailAddress" => true
+			"countryName" 							=> true,
+			"stateOrProvinceName" 			=> true,
+			"localityName" 							=> true,
+			"organizationName" 					=> true,
+			"organizationalUnitName" 		=> true,
+			"commonName" 								=> true,
+			"emailAddress" 							=> true
 	];
 
 	protected $validity 		= NULL;
@@ -41,12 +42,12 @@ class Cetificate implements CertificateInterface {
 	public function setCertificate($cert)
 	{
 		$this->certificate = $cert;
-		$this->data = $this->parse($this->certificate);
-	}
+		$this->data = $this->parse($cert);
 
-	public function setValidity($days)
-	{
-		$this->validity = (int)$days;
+		if(isset($this->data['validTo_time_t']))
+		{
+			$this->validUntilDate = gmdate('Y-m-d H:i:s', $this->data['validTo_time_t']);
+		}
 	}
 
 	public function setPassword($password = '')
@@ -80,14 +81,19 @@ class Cetificate implements CertificateInterface {
 		return $this->certificate;
 	}
 
-	public function getValidity()
+	public function getValidUntilDate()
 	{
-		return $this->validity;
+		return $this->validUntilDate;
 	}
 
 	public function getPassword()
 	{
 		return $this->password;
+	}
+
+	public function setNew($val)
+	{
+		$this->new = $val;
 	}
 
 	public function isNew()
@@ -102,9 +108,6 @@ class Cetificate implements CertificateInterface {
 
 	private function parse($data)
 	{
-		if(!is_array($data))
-			return [];
-
 		return openssl_x509_parse ($data, false);
 	}
 

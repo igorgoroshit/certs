@@ -2,17 +2,19 @@
 
 return [
 
-		"table"											=> "cartificates",
+		"table"											=> "certificates",
 		"serialKey"									=> "id",
+
+		"rootSerial"								=> 1000000,
 
 		"subject" => [
 			"countryName"            	=> "IL",              		// 2-digit country code
 			"stateOrProvinceName"    	=> "Northern District", 	// Province
 			"localityName"           	=> "Kiryat Shmona",     	// Locality
 			"organizationName"       	=> "Web Tech",  					// Organization Name
-			"organizationalUnitName" 	=> "Web Tech CA",  				// Organization Department Name
-			"commonName"             	=> "*.webt.co.il",     		// FQDN for certificate requests
-			"emailAddress"           	=> "igor@webt.co.il"			// Email address for certificate
+			"organizationalUnitName" 	=> "CA",  								// Organization Department Name
+			"commonName"             	=> "Web Tech",     				// FQDN for certificate requests
+			"emailAddress"           	=> "admin@webt.co.il"			// Email address for certificate
 		], 
 
 		"password" 								=> '',                		// Password for private key sign

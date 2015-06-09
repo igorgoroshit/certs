@@ -12,14 +12,13 @@ class AddCertificatesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('organizations', function($table)
+		Schema::create('certificates', function($table)
 		{
 			$table->increments('id');
-			$table->binary('public');
 			$table->binary('private');
-			$table->binary('certificate');
-			$table->dateTime
-
+			$table->binary('csr');
+			$table->binary('certificate')->nullable();
+			$table->dateTime('validUntilDate')->nullable();
 		});
 	}
 
