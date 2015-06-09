@@ -6,7 +6,7 @@ class Certificate extends Facade {
 
 	  protected static function getFacadeAccessor()
     {
-        return 'l4certificate';
+        return 'l4cert';
     }
 
 }

@@ -86,7 +86,7 @@ class SSLCert{
 		openssl_pkey_export($key, $priKeyOut);
 
 		//create and export new csr
-		$csr = openssl_csr_new($data, $priKey);
+		$csr = openssl_csr_new($data, $key);
 		$csrOut = NULL;
 		openssl_csr_export($csr, $csrOut);
 
@@ -111,7 +111,9 @@ class SSLCert{
 			$csr,
 			$this->root->getCertificate(),
 			$this->root->getPrivateKey(),
-			$days
+			$days,
+			NULL,
+			$cert->getSerial()
 		);
 
 		$cert->setCertificate($this->export($signed));
