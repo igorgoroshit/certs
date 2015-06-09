@@ -14,10 +14,16 @@ class SSLCert{
 	protected $root;
 	protected $validity = 365;
 	protected $password = '';
+	protected $config = [];
 
 	public function __construct(StorageInterface $storage)
 	{
 		$this->storage = $storage;
+	}
+
+	public function setConfig($key, $value)
+	{
+		$this->config[$key] = $value;
 	}
 
 	public function setRoot(CertificateInterface $cert)
@@ -74,6 +80,11 @@ class SSLCert{
 	public function create($data, $save = true)
 	{
 
+		if(empty($this->config))
+			$config = NULL;
+		else
+			$config = $this->config;
+
 		//create private/public key pair
 		$key = openssl_pkey_new([
 			'digest_alg' 				=> $this->algo,
@@ -83,10 +94,10 @@ class SSLCert{
 
 		//export private key
 		$priKeyOut = NULL;
-		openssl_pkey_export($key, $priKeyOut);
+		openssl_pkey_export($key, $priKeyOut, NULL, $config);
 
 		//create and export new csr
-		$csr = openssl_csr_new($data, $key);
+		$csr = openssl_csr_new($data, $key, $config);
 		$csrOut = NULL;
 		openssl_csr_export($csr, $csrOut);
 
@@ -103,6 +114,11 @@ class SSLCert{
 
 	public function sign(CertificateInterface $cert, $validity = NULL, $save = true)
 	{
+		if(empty($this->config))
+			$config = NULL;
+		else
+			$config = $this->config;
+
 		$csr 	= $cert->getCsr();
 
 		$days = $validity ? (int)$validity : $this->validity;
@@ -112,7 +128,7 @@ class SSLCert{
 			$this->root->getCertificate(),
 			$this->root->getPrivateKey(),
 			$days,
-			NULL,
+			$config,
 			$cert->getSerial()
 		);
 

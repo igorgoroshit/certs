@@ -31,6 +31,9 @@ class L4CertsServiceProvider extends ServiceProvider {
 			$certs->setBits(Config::get('certs::bits'));
 			$certs->setType(Config::get('certs::type'));
 
+			if(!empty($_ENV['OPEN_SSL_CONF']))
+				$certs->setConfig('config', getenv('OPEN_SSL_CONF'));
+
 			$root = $certs->find(Config::get('certs::rootSerial'));
 
 			//set root certificate if exists
