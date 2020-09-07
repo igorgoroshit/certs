@@ -1,12 +1,14 @@
-<?php namespace Igorgoroshit\Certs\Facades;
+<?php
+
+namespace Igorgoroshit\Certs\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Certificate extends Facade {
+class Certificate extends Facade
+{
 
-	  protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor()
     {
         return 'l4cert';
     }
-
 }
